@@ -310,7 +310,8 @@ const PlanChangeDialog: React.FC<{
 
         let json: Awaited<ReturnType<typeof postPlanChange>>;
         try {
-            json = await postPlanChange({ orbId: selectedPlan.plan.code });
+            // TODO: set real value for `withGrowthFeatures` once the UI is adapted for customers to self-serve.
+            json = await postPlanChange({ orbId: selectedPlan.plan.code, withGrowthFeatures: false });
         } catch {
             setLoading(false);
             setError('An error occurred. Please try again.');
@@ -368,7 +369,8 @@ const PlanChangeDialog: React.FC<{
         setError(null);
 
         try {
-            await postPlanChange({ orbId: selectedPlan.plan.code });
+            // TODO: set real value for `withGrowthFeatures` once the UI is adapted for customers to self-serve.
+            await postPlanChange({ orbId: selectedPlan.plan.code, withGrowthFeatures: false });
         } catch {
             setLoading(false);
             setError('An error occurred. Please try again.');
