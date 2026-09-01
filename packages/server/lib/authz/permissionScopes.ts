@@ -26,6 +26,7 @@ export const PERMISSION_BY_SCOPE: Partial<Record<Scope, [Resource, Action]>> = {
     'account:api_keys:create': ['account_key', '*'],
     'account:api_keys:list': ['account_key', '*'],
     'account:api_keys:delete': ['account_key', '*'],
+    'account:environments:list': ['environment', 'read'],
     'account:environments:create': ['environment', 'create'],
     'account:environments:set_production': ['environment_production_flag', 'update'],
     // environment plane. `:list` and `:read` both map to the legacy `read` — the private grammar has
