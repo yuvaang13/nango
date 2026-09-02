@@ -52,9 +52,15 @@ router.use(staticSite);
 
 // -------
 // Error handling.
-router.use((err: any, req: Request, res: Response<ApiError<'invalid_json'>>, _: any) => {
+router.use((err: any, req: Request, res: Response<ApiError<'invalid_json'> | ApiError<'request_too_large'>>, _: any) => {
     if (err instanceof SyntaxError && 'body' in err && 'type' in err && err.type === 'entity.parse.failed') {
         res.status(400).send({ error: { code: 'invalid_json', message: err.message } });
+        return;
+    }
+
+    if (err instanceof Error && 'type' in err && err.type === 'entity.too.large') {
+        const limit = 'limit' in err && typeof err.limit === 'number' ? `${Math.round(err.limit / (1024 * 1024))}mb` : undefined;
+        res.status(413).send({ error: { code: 'request_too_large', message: `Request entity too large${limit ? ` (limit: ${limit})` : ''}` } });
         return;
     }
 

@@ -78,6 +78,24 @@ describe('route', () => {
                 }
             });
         });
+
+        it('should handle a body over the size limit', async () => {
+            const { apiKey } = await seeders.seedAccountEnvAndUser();
+            const oversizedBody = JSON.stringify({ padding: 'a'.repeat(2 * 1024 * 1024) }); // over the 1mb limit on this router
+            const res = await fetch(`${api.url}/api/v1/environment/callback`, {
+                method: 'POST',
+                body: oversizedBody,
+                headers: { Authorization: `Bearer ${apiKey.secret}`, 'content-type': 'application/json' }
+            });
+
+            expect(res.status).toBe(413);
+            expect(await res.json()).toStrictEqual({
+                error: {
+                    code: 'request_too_large',
+                    message: expect.stringContaining('Request entity too large')
+                }
+            });
+        });
     });
 
     describe('Authenticated endpoints', () => {
